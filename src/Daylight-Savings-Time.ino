@@ -27,7 +27,6 @@ void setup() {
 
 void loop() {
   static unsigned int i=0;
-  if (i >= numberOfTestPoints) i=0; 
   Time.setTime(testTimesAndDates[i]);                                           // Note this is UTC time not local.  
   // Now, we will see if the Timezone calculations are correct
   if (Time.isValid()) 
@@ -38,7 +37,9 @@ void loop() {
   Particle.publish("Test",data,PRIVATE);
   i++;                                                                         // Move to the next Test Case
   delay(1000);                                                                 // Observe Particle Rate Limits
-
+  if (i > numberOfTestPoints) {                                                // Done - stop iterating to save data
+    while (1) Particle.process();                                              // Keep from going unresponsive as no more main loop transits
+  }
 }
 
 
